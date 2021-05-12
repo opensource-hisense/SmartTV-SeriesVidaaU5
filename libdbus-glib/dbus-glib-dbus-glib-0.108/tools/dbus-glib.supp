@@ -1,0 +1,297 @@
+# Valgrind error suppression file
+
+# ============================= GLib ==================================
+
+{
+   g_set_prgname copies its argument
+   Memcheck:Leak
+   ...
+   fun:g_set_prgname
+}
+
+{
+   one g_get_charset per child^Wprocess
+   Memcheck:Leak
+   ...
+   fun:g_get_charset
+}
+
+{
+   one g_get_home_dir per process
+   Memcheck:Leak
+   ...
+   fun:g_get_home_dir
+}
+
+{
+   GQuarks can't be freed
+   Memcheck:Leak
+   ...
+   fun:g_quark_from_static_string
+}
+
+{
+   GQuarks can't be freed
+   Memcheck:Leak
+   ...
+   fun:g_quark_from_string
+}
+
+{
+   interned strings can't be freed
+   Memcheck:Leak
+   ...
+   fun:g_intern_string
+}
+
+{
+   interned strings can't be freed
+   Memcheck:Leak
+   ...
+   fun:g_intern_static_string
+}
+
+{
+   shared global default g_main_context
+   Memcheck:Leak
+   ...
+   fun:g_main_context_new
+   fun:g_main_context_default
+}
+
+{
+   GTest initialization
+   Memcheck:Leak
+   ...
+   fun:g_test_init
+   fun:main
+}
+
+{
+   GTest admin
+   Memcheck:Leak
+   ...
+   fun:g_test_add_vtable
+}
+
+{
+   GTest pseudorandomness
+   Memcheck:Leak
+   ...
+   fun:g_rand_new_with_seed_array
+   fun:test_run_seed
+   ...
+   fun:g_test_run
+}
+
+{
+   GTest pseudorandomness
+   Memcheck:Leak
+   ...
+   fun:g_rand_new_with_seed_array
+   fun:test_run_seed
+   ...
+   fun:g_test_run_suite
+}
+
+{
+   GSLice initialization
+   Memcheck:Leak
+   ...
+   fun:g_malloc0
+   fun:g_slice_init_nomessage
+   fun:g_slice_alloc
+}
+
+{
+   GData initialization
+   Memcheck:Leak
+   ...
+   fun:g_data_initialize
+}
+
+{
+   GTest strings
+   Memcheck:Leak
+   ...
+   fun:g_strdup
+   fun:g_test_run_suite_internal
+}
+
+# ============================= GObject ===============================
+
+{
+   g_type_init
+   Memcheck:Leak
+   ...
+   fun:g_type_init
+}
+
+{
+   g_type_init_with_debug_flags
+   Memcheck:Leak
+   ...
+   fun:g_type_init_with_debug_flags
+}
+
+{
+   g_type_register_static
+   Memcheck:Leak
+   ...
+   fun:g_type_register_static
+}
+
+{
+   g_type_add_interface_static
+   Memcheck:Leak
+   ...
+   fun:g_type_add_interface_static
+}
+
+{
+   initialization of interfaces
+   Memcheck:Leak
+   ...
+   fun:type_iface_vtable_base_init_Wm
+   fun:g_type_class_ref
+}
+
+{
+   g_param_spec_pool_new in class_init
+   Memcheck:Leak
+   ...
+   fun:g_param_spec_pool_new
+   ...
+   fun:g_type_class_ref
+}
+
+{
+   class creation
+   Memcheck:Leak
+   ...
+   fun:g_malloc0
+   fun:g_type_class_ref
+}
+
+# ============================= GIO ===================================
+
+{
+   GIO init
+   Memcheck:Leak
+   ...
+   fun:g_inet_address_class_intern_init
+}
+
+{
+   g_simple_async_result class
+   Memcheck:Leak
+   ...
+   fun:g_type_class_ref
+   ...
+   fun:g_simple_async_result_new
+}
+
+# ============================= dbus-glib =============================
+
+{
+   registering marshallers is permanent
+   Memcheck:Leak
+   ...
+   fun:dbus_g_object_register_marshaller_array
+   fun:dbus_g_object_register_marshaller
+}
+
+{
+   dbus-glib specialized GTypes are permanent
+   Memcheck:Leak
+   ...
+   fun:dbus_g_type_specialized_init
+}
+
+{
+   dbus-glib specialized GTypes are permanent (inlined)
+   Memcheck:Leak
+   ...
+   fun:register_container
+   fun:specialized_init
+   fun:g_once_impl
+}
+
+{
+   dbus-glib specialized GTypes are permanent (inlined)
+   Memcheck:Leak
+   ...
+   fun:g_hash_table_new_full
+   fun:specialized_init
+   fun:g_once_impl
+}
+
+{
+   error registrations are for life, not just for Christmas
+   Memcheck:Leak
+   ...
+   fun:dbus_g_error_domain_register
+}
+
+{
+   DBusGProxy class initialization
+   Memcheck:Leak
+   ...
+   fun:g_type_class_ref
+   ...
+   fun:dbus_g_proxy_new
+}
+
+{
+   _dbus_g_type_specialized_builtins_init
+   Memcheck:Leak
+   ...
+   fun:_dbus_g_type_specialized_builtins_init
+}
+
+{
+   _dbus_g_value_types_init
+   Memcheck:Leak
+   ...
+   fun:_dbus_g_value_types_init
+}
+
+{
+   specialized maps are permanent
+   Memcheck:Leak
+   ...
+   fun:lookup_or_register_specialized
+   fun:dbus_g_type_get_map
+}
+
+{
+   specialized collections are permanent
+   Memcheck:Leak
+   ...
+   fun:lookup_or_register_specialized
+   fun:dbus_g_type_get_collection
+}
+
+{
+   specialized structs are permanent
+   Memcheck:Leak
+   ...
+   fun:lookup_or_register_specialized
+   fun:dbus_g_type_get_struct
+}
+
+{
+   specialized structs are permanent (varargs)
+   Memcheck:Leak
+   ...
+   fun:lookup_or_register_specialized
+   fun:dbus_g_type_get_structv
+}
+
+{
+   specialized structs are permanent (inlined)
+   Memcheck:Leak
+   ...
+   fun:lookup_or_register_specialized
+   fun:dbus_g_value_tuple_parse_variant
+}

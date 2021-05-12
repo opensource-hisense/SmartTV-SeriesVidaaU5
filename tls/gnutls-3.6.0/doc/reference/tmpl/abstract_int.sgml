@@ -1,0 +1,46 @@
+<!-- ##### SECTION Title ##### -->
+abstract_int
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### FUNCTION pubkey_to_bits ##### -->
+<para>
+
+</para>
+
+@params: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pubkey_verify_data ##### -->
+<para>
+
+</para>
+
+@se: 
+@me: 
+@data: 
+@signature: 
+@params: 
+@sign_params: 
+@vflags: 
+@Returns: 
+
+

@@ -1,0 +1,138 @@
+# Copyright © 2015-2018 Collabora Ltd.
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+image: debian:buster-slim
+
+stages:
+  - build
+
+before_script:
+  - ./tools/ci-install.sh
+  - mkdir -p .ccache
+  - export CCACHE_BASEDIR="$(pwd)"
+  - export CCACHE_DIR="$CCACHE_BASEDIR/.ccache"
+  # Debian's ccache package creates symlinks here for all supported
+  # compilers
+  - export PATH="/usr/lib/ccache:$PATH"
+
+cache:
+  key: ${CI_JOB_NAME}
+  paths:
+    - .ccache/
+
+variables:
+  ci_in_docker: "yes"
+  ci_parallel: "2"
+  ci_sudo: "yes"
+  ci_distro: "debian"
+  ci_suite: "buster"
+
+build:production:
+  stage: build
+  image: "debian:buster-slim"
+  variables:
+    ci_variant: "production"
+  script: &script
+    - chown -R user .
+    - runuser -u user ./tools/ci-build.sh
+
+build:debug:
+  stage: build
+  image: "debian:buster-slim"
+  variables:
+    ci_variant: "debug"
+  script: *script
+
+build:reduced:
+  stage: build
+  when: manual
+  image: "debian:buster-slim"
+  variables:
+    ci_variant: "reduced"
+  script: *script
+
+build:legacy:
+  stage: build
+  when: manual
+  image: "debian:buster-slim"
+  variables:
+    ci_variant: "legacy"
+  script: *script
+
+build:cmake:
+  stage: build
+  image: "debian:buster-slim"
+  variables:
+    ci_buildsys: "cmake-dist"
+  script: *script
+
+build:i686-w64-mingw32-debug:
+  stage: build
+  image: "debian:buster-slim"
+  variables:
+    ci_host: "i686-w64-mingw32"
+    ci_variant: "debug"
+  script: *script
+
+build:i686-w64-mingw32-cmake:
+  stage: build
+  when: manual
+  image: "debian:buster-slim"
+  variables:
+    ci_buildsys: "cmake"
+    ci_host: "i686-w64-mingw32"
+  script: *script
+
+build:x86_64-w64-mingw32:
+  stage: build
+  image: "debian:buster-slim"
+  variables:
+    ci_host: "x86_64-w64-mingw32"
+  script: *script
+
+build:x86_64-w64-mingw32-cmake-debug:
+  stage: build
+  image: "debian:buster-slim"
+  variables:
+    ci_buildsys: "cmake"
+    ci_host: "x86_64-w64-mingw32"
+    ci_variant: "debug"
+  script: *script
+
+build:stretch:
+  when: manual
+  stage: build
+  image: "debian:stretch-slim"
+  variables:
+    ci_suite: "stretch"
+  script: *script
+
+build:xenial:
+  when: manual
+  stage: build
+  image: "ubuntu:xenial"
+  variables:
+    ci_distro: "ubuntu"
+    ci_suite: "xenial"
+  script: *script
+
+# vim:set sw=2 sts=2 et:

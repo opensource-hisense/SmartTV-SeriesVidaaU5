@@ -1,0 +1,187 @@
+name: libplctag CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  ubuntu_x64:
+
+    runs-on: ubuntu-latest
+
+    env:
+      VERSION: "2.1.6"
+      ARTIFACT: "libplctag_2.1.6_ubuntu_x64"
+      BUILD: "${{ github.workspace }}/build"
+      DIST: "${{ github.workspace }}/build/bin_dist"
+
+    steps:
+    - name: "Checkout library source."
+      uses: actions/checkout@v2
+
+    - name: Set up build environment
+      run: sudo apt install build-essential cmake
+
+    - name: Create build directory
+      run: rm -rf ${{ env.BUILD }}; mkdir -p ${{ env.BUILD }}
+
+    - name: Configure CMake
+      run: cd ${{ env.BUILD }}; cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_32_BIT=0 ..
+
+    - name: Build
+      run: cd ${{ env.BUILD }}; cmake --build .
+
+    - name: Test
+      run: |
+        cd ${{ env.DIST }}
+        echo "start up simulator..."
+        ${{ env.DIST }}/ab_server --plc=ControlLogix --path=1,0 --tag=TestBigArray:DINT[2000] &
+        sleep 2
+        echo "test simple get/set tag."
+        ${{ env.DIST }}/simple
+        echo "test callback use."
+        ${{ env.DIST }}/test_callback
+
+    - name: Upload ZIP artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ env.ARTIFACT }}
+        path: ${{ env.DIST }}
+
+  ubuntu_x86:
+
+    runs-on: ubuntu-latest
+
+    env:
+      VERSION: "2.1.6"
+      ARTIFACT: "libplctag_2.1.6_ubuntu_x86"
+      BUILD: "${{ github.workspace }}/build"
+      DIST: "${{ github.workspace }}/build/bin_dist"
+
+    steps:
+    - name: Checkout library source
+      uses: actions/checkout@v2
+
+    - name: Set up build environment
+      run: sudo apt update; sudo apt-get -y --force-yes install gcc-multilib g++-multilib
+
+    - name: Create build directory
+      run: rm -rf ${{ env.BUILD }}; mkdir -p ${{ env.BUILD }}
+
+    - name: Configure CMake
+      run: cd ${{ env.BUILD }}; cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_32_BIT=1 ..
+
+    - name: Build
+      run: cd ${{ env.BUILD }}; cmake --build .
+
+    - name: Test
+      run: |
+        cd ${{ env.DIST }}
+        echo "start up simulator..."
+        ${{ env.DIST }}/ab_server --plc=ControlLogix --path=1,0 --tag=TestBigArray:DINT[2000] &
+        sleep 2
+        echo "test simple get/set tag."
+        ${{ env.DIST }}/simple
+        echo "test callback use."
+        ${{ env.DIST }}/test_callback
+
+    - name: Upload ZIP artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ env.ARTIFACT }}
+        path: ${{ env.DIST }}
+
+  macos_x64:
+
+    runs-on: macos-latest
+
+    env:
+      VERSION: "2.1.6"
+      ARTIFACT: "libplctag_2.1.6_macos_x64"
+      BUILD: "${{ github.workspace }}/build"
+      DIST: "${{ github.workspace }}/build/bin_dist"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create build directory
+      run: rm -rf ${{ env.BUILD }}; mkdir -p ${{ env.BUILD }}
+
+    - name: Configure CMake
+      run: cd ${{ env.BUILD }}; cmake -DCMAKE_BUILD_TYPE=Release ..
+
+    - name: Build
+      run: cd ${{ env.BUILD }}; cmake --build .
+
+    - name: Test
+      run: echo "Tests suppressed on macOS."
+
+    - name: Upload ZIP artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ env.ARTIFACT }}
+        path: ${{ env.DIST }}
+
+  windows_x64:
+
+    runs-on: windows-latest
+
+    env:
+      VERSION: "2.1.6"
+      ARTIFACT: "libplctag_2.1.6_windows_x64"
+      BUILD: "${{ github.workspace }}/build"
+      DIST: "${{ github.workspace }}/build/bin_dist"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create build directory
+      run: mkdir ${{ env.BUILD }}
+
+    - name: Configure CMake
+      run: cd ${{ env.BUILD }}; cmake .. -G "Visual Studio 16 2019" -A x64
+
+    - name: Build
+      run: cd ${{ env.BUILD }}; cmake --build . --config Release
+
+    - name: Test
+      run: echo "no-op for now"
+
+    - name: Upload ZIP artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ env.ARTIFACT }}
+        path: ${{ env.DIST }}
+
+  windows_x86:
+
+    runs-on: windows-latest
+
+    env:
+      VERSION: "2.1.6"
+      ARTIFACT: "libplctag_2.1.6_windows_x86"
+      BUILD: "${{ github.workspace }}/build"
+      DIST: "${{ github.workspace }}/build/bin_dist"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create build directory
+      run: mkdir ${{ env.BUILD }}
+
+    - name: Configure CMake
+      run: cd ${{ env.BUILD }}; cmake .. -G "Visual Studio 16 2019" -A Win32
+
+    - name: Build
+      run: cd ${{ env.BUILD }}; cmake --build . --config Release
+
+    - name: Test
+      run: echo "no-op for now"
+
+    - name: Upload ZIP artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ env.ARTIFACT }}
+        path: ${{ env.DIST }}

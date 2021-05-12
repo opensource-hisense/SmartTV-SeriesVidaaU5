@@ -1,0 +1,64 @@
+# Valgrind error suppression file: dbus-glib regression tests
+
+{
+   MyObject properties
+   Memcheck:Leak
+   ...
+   fun:g_param_spec_string
+   ...
+   fun:my_object_class_intern_init
+   fun:g_type_class_ref
+}
+
+{
+   MyObject properties
+   Memcheck:Leak
+   ...
+   fun:g_param_spec_internal
+   ...
+   fun:my_object_class_intern_init
+   fun:g_type_class_ref
+}
+
+{
+   MyObject signals
+   Memcheck:Leak
+   ...
+   fun:g_signal_new
+   fun:my_object_class_intern_init
+   fun:g_type_class_ref
+}
+
+{
+   MyObject qdata
+   Memcheck:Leak
+   ...
+   fun:g_type_set_qdata
+   fun:my_object_class_intern_init
+   fun:g_type_class_ref
+}
+
+{
+   shared-bus test
+   Memcheck:Leak
+   ...
+   fun:dbus_g_bus_get
+   fun:test_shared_bus
+}
+
+{
+   object initialization
+   Memcheck:Leak
+   ...
+   fun:g_signal_new
+   fun:g_object_do_class_init
+   fun:g_type_class_ref
+}
+
+{
+   object interface initialization
+   Memcheck:Leak
+   ...
+   fun:g_type_add_interface_check
+   fun:g_type_class_ref
+}
